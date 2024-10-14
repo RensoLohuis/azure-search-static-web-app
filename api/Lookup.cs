@@ -76,9 +76,18 @@ namespace WebSearch.Function
             var response = req.CreateResponse(HttpStatusCode.OK);
             response.Headers.Add("Content-Type", "application/json; charset=utf-8");
 
-            // Serialize data
-            // var serializer = new JsonObjectSerializer(new JsonSerializerOptions(JsonSerializerDefaults.Web));
-            // await response.WriteAsJsonAsync(output, serializer);
+            try
+            {
+                string jsonOutput = JsonSerializer.Serialize(output, new JsonSerializerOptions(JsonSerializerDefaults.Web));
+                await response.WriteStringAsync(jsonOutput);
+            }
+            catch (Exception ex)
+            {
+                var errorResponse = req.CreateResponse(HttpStatusCode.InternalServerError);
+                errorResponse.WriteString($"An error occurred during serialization. Error: {ex.Message}");
+                return errorResponse;
+            }
+
 
             return response;
         }
