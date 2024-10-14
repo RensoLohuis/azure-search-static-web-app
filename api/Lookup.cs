@@ -30,17 +30,9 @@ namespace WebSearch.Function
             [HttpTrigger(AuthorizationLevel.Anonymous, "get", "post")] HttpRequestData req, 
             FunctionContext executionContext)
         {
-
-
-
-            var response = req.CreateResponse(HttpStatusCode.Found);
-            response.Headers.Add("Content-Type", "application/json; charset=utf-8");
-
-            return response;
-
-            // // Get Document Id
-            // var query = System.Web.HttpUtility.ParseQueryString(req.Url.Query);
-            // string documentId = query["id"].ToString();
+            // Get Document Id
+            var query = System.Web.HttpUtility.ParseQueryString(req.Url.Query);
+            string documentId = query["id"].ToString();
 
             // // Azure AI Search 
             // Uri serviceEndpoint = new($"https://{searchServiceName}.search.windows.net/");
@@ -60,15 +52,19 @@ namespace WebSearch.Function
             //     Document = getDocumentResponse.Value
             // };
 
-            // var response = req.CreateResponse(HttpStatusCode.Found);
-            // response.Headers.Add("Content-Type", "application/json; charset=utf-8");
+            //TEMP
+            var output = documentId;
 
-            // // Serialize data
-            // var serializer = new JsonObjectSerializer(
-            //     new JsonSerializerOptions(JsonSerializerDefaults.Web));
-            // await response.WriteAsJsonAsync(output, serializer);
 
-            // return response;
+            var response = req.CreateResponse(HttpStatusCode.Found);
+            response.Headers.Add("Content-Type", "application/json; charset=utf-8");
+
+            // Serialize data
+            var serializer = new JsonObjectSerializer(
+                new JsonSerializerOptions(JsonSerializerDefaults.Web));
+            await response.WriteAsJsonAsync(output, serializer);
+
+            return response;
         }
     }
 }
