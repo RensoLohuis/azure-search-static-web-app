@@ -77,8 +77,8 @@ namespace WebSearch.Function
             response.Headers.Add("Content-Type", "application/json; charset=utf-8");
 
             // Serialize data
-            var serializer = new JsonObjectSerializer(new JsonSerializerOptions(JsonSerializerDefaults.Web));
-            await response.WriteAsJsonAsync(output, serializer);
+            // var serializer = new JsonObjectSerializer(new JsonSerializerOptions(JsonSerializerDefaults.Web));
+            // await response.WriteAsJsonAsync(output, serializer);
 
             return response;
         }
