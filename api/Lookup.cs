@@ -44,13 +44,13 @@ namespace WebSearch.Function
                 new AzureKeyCredential(searchApiKey)
             );
 
-            // var getDocumentResponse = await searchClient.GetDocumentAsync<SearchDocument>(documentId);
+            var getDocumentResponse = await searchClient.GetDocumentAsync<SearchDocument>(documentId);
 
-            // // Data to return 
-            // var output = new LookupOutput
-            // {
-            //     Document = getDocumentResponse.Value
-            // };
+            // Data to return 
+            var output = new LookupOutput
+            {
+                Document = getDocumentResponse.Value
+            };
 
             //TEMP
             var output = documentId;
