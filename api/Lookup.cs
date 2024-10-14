@@ -53,7 +53,7 @@ namespace WebSearch.Function
             };
 
             //TEMP
-            var output = documentId;
+            // var output = documentId;
 
 
             var response = req.CreateResponse(HttpStatusCode.Found);
