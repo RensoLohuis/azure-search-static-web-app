@@ -38,37 +38,37 @@ namespace WebSearch.Function
 
             return response;
 
-            // Get Document Id
-            var query = System.Web.HttpUtility.ParseQueryString(req.Url.Query);
-            string documentId = query["id"].ToString();
+            // // Get Document Id
+            // var query = System.Web.HttpUtility.ParseQueryString(req.Url.Query);
+            // string documentId = query["id"].ToString();
 
-            // Azure AI Search 
-            Uri serviceEndpoint = new($"https://{searchServiceName}.search.windows.net/");
+            // // Azure AI Search 
+            // Uri serviceEndpoint = new($"https://{searchServiceName}.search.windows.net/");
 
-            SearchClient searchClient = new(
+            // SearchClient searchClient = new(
 
-                serviceEndpoint,
-                searchIndexName,
-                new AzureKeyCredential(searchApiKey)
-            );
+            //     serviceEndpoint,
+            //     searchIndexName,
+            //     new AzureKeyCredential(searchApiKey)
+            // );
 
-            var getDocumentResponse = await searchClient.GetDocumentAsync<SearchDocument>(documentId);
+            // var getDocumentResponse = await searchClient.GetDocumentAsync<SearchDocument>(documentId);
 
-            // Data to return 
-            var output = new LookupOutput
-            {
-                Document = getDocumentResponse.Value
-            };
+            // // Data to return 
+            // var output = new LookupOutput
+            // {
+            //     Document = getDocumentResponse.Value
+            // };
 
-            var response = req.CreateResponse(HttpStatusCode.Found);
-            response.Headers.Add("Content-Type", "application/json; charset=utf-8");
+            // var response = req.CreateResponse(HttpStatusCode.Found);
+            // response.Headers.Add("Content-Type", "application/json; charset=utf-8");
 
-            // Serialize data
-            var serializer = new JsonObjectSerializer(
-                new JsonSerializerOptions(JsonSerializerDefaults.Web));
-            await response.WriteAsJsonAsync(output, serializer);
+            // // Serialize data
+            // var serializer = new JsonObjectSerializer(
+            //     new JsonSerializerOptions(JsonSerializerDefaults.Web));
+            // await response.WriteAsJsonAsync(output, serializer);
 
-            return response;
+            // return response;
         }
     }
 }
