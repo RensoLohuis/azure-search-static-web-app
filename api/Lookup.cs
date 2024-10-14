@@ -27,44 +27,61 @@ namespace WebSearch.Function
 
         [Function("lookup")]
         public async Task<HttpResponseData> RunAsync(
-            [HttpTrigger(AuthorizationLevel.Anonymous, "get", "post")] HttpRequestData req, 
-            FunctionContext executionContext)
+    [HttpTrigger(AuthorizationLevel.Anonymous, "get", "post")] HttpRequestData req,
+    FunctionContext executionContext)
         {
             // Get Document Id
             var query = System.Web.HttpUtility.ParseQueryString(req.Url.Query);
-            string documentId = query["id"].ToString();
+            string documentId = query["id"];
+            if (string.IsNullOrEmpty(documentId))
+            {
+                var errorResponse = req.CreateResponse(HttpStatusCode.BadRequest);
+                errorResponse.WriteString("The 'id' parameter is required.");
+                return errorResponse;
+            }
 
-            // // Azure AI Search 
+            // Azure AI Search
             Uri serviceEndpoint = new($"https://{searchServiceName}.search.windows.net/");
-
             SearchClient searchClient = new(
-
                 serviceEndpoint,
                 searchIndexName,
                 new AzureKeyCredential(searchApiKey)
             );
 
-            var getDocumentResponse = await searchClient.GetDocumentAsync<SearchDocument>(documentId);
+            SearchDocument document;
+            try
+            {
+                var getDocumentResponse = await searchClient.GetDocumentAsync<SearchDocument>(documentId);
+                document = getDocumentResponse.Value;
+            }
+            catch (RequestFailedException ex)
+            {
+                var errorResponse = req.CreateResponse(HttpStatusCode.NotFound);
+                errorResponse.WriteString($"Document with ID '{documentId}' was not found. Error: {ex.Message}");
+                return errorResponse;
+            }
+            catch (Exception ex)
+            {
+                var errorResponse = req.CreateResponse(HttpStatusCode.InternalServerError);
+                errorResponse.WriteString($"An unexpected error occurred. Error: {ex.Message}");
+                return errorResponse;
+            }
 
-            // Data to return 
+            // Data to return
             var output = new LookupOutput
             {
-                Document = getDocumentResponse.Value
+                Document = document
             };
 
-            //TEMP
-            // var output = documentId;
-
-
-            var response = req.CreateResponse(HttpStatusCode.Found);
+            var response = req.CreateResponse(HttpStatusCode.OK);
             response.Headers.Add("Content-Type", "application/json; charset=utf-8");
 
             // Serialize data
-            // var serializer = new JsonObjectSerializer(
-            //     new JsonSerializerOptions(JsonSerializerDefaults.Web));
-            // await response.WriteAsJsonAsync(output, serializer);
+            var serializer = new JsonObjectSerializer(new JsonSerializerOptions(JsonSerializerDefaults.Web));
+            await response.WriteAsJsonAsync(output, serializer);
 
             return response;
         }
+
     }
 }
