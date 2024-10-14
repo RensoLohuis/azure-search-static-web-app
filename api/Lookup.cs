@@ -35,14 +35,14 @@ namespace WebSearch.Function
             string documentId = query["id"].ToString();
 
             // // Azure AI Search 
-            // Uri serviceEndpoint = new($"https://{searchServiceName}.search.windows.net/");
+            Uri serviceEndpoint = new($"https://{searchServiceName}.search.windows.net/");
 
-            // SearchClient searchClient = new(
+            SearchClient searchClient = new(
 
-            //     serviceEndpoint,
-            //     searchIndexName,
-            //     new AzureKeyCredential(searchApiKey)
-            // );
+                serviceEndpoint,
+                searchIndexName,
+                new AzureKeyCredential(searchApiKey)
+            );
 
             // var getDocumentResponse = await searchClient.GetDocumentAsync<SearchDocument>(documentId);
 
