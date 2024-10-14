@@ -31,6 +31,13 @@ namespace WebSearch.Function
             FunctionContext executionContext)
         {
 
+
+
+            var response = req.CreateResponse(HttpStatusCode.Found);
+            response.Headers.Add("Content-Type", "application/json; charset=utf-8");
+
+            return response;
+
             // Get Document Id
             var query = System.Web.HttpUtility.ParseQueryString(req.Url.Query);
             string documentId = query["id"].ToString();
